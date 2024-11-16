@@ -13,9 +13,6 @@ QUEUE_NAME = 'measurements'
 
 def listen():
     print('starting listener')
-    print(os.getenv("RABBITMQ_USER"))
-    print(os.getenv("RABBITMQ_PASSWORD"))
-    print(os.getenv("RABBITMQ_SERVER"))
     creds = pika.PlainCredentials(
             username=os.getenv("RABBITMQ_USER"), 
             password=os.getenv("RABBITMQ_PASSWORD")
