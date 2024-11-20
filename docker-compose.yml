@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres
+    container_name: "db"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
@@ -23,8 +24,9 @@ services:
       retries: 3
     env_file:
       - ./.env.local
-  django-api:
+  api:
     build: .
+    container_name: "api"
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - 8000:8000
@@ -34,6 +36,7 @@ services:
       - db
   daemon:
     build: workers/.
+    container_name: "daemon"
     env_file:
       - ./.env.local
     network_mode: "host"
