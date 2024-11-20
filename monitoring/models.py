@@ -1,21 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Entity(models.Model):
+class Unit(models.Model):
 	name = models.CharField(max_length=200)
 	description = models.CharField(max_length=2000, null=True)
-
-	def __str__(self):
-		return self.name
-
-class Unit(Entity):
 	dimension = models.CharField(max_length=200)
 
 	def __str__(self):
 		return f"{self.name} - {self.dimension}"
 
-class Location(Entity):
-	pass
+class Location(models.Model):
+	name = models.CharField(max_length=200)
+	description = models.CharField(max_length=2000, null=True)
 
 class Host(models.Model):
 	hostname = models.CharField(max_length=200)
@@ -26,7 +22,9 @@ class Host(models.Model):
 	def __str__(self):
 		return f"{self.hostname} - {self.ip_address}"
 
-class Device(Entity):
+class Device(models.Model):
+	name = models.CharField(max_length=200)
+	description = models.CharField(max_length=2000, null=True)
 	host = models.ForeignKey(Host, on_delete=models.CASCADE)
 
 	def __str__(self):

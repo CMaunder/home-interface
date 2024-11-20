@@ -1,12 +1,36 @@
-:)
+add .env.local
+eg...
 
-.env.rabbit
-RABBITMQ_DEFAULT_USER=
-RABBITMQ_DEFAULT_PASS=
+# worker settings
 
-.env.local
-RABBITMQ_USER=
-RABBITMQ_PASSWORD=
+RABBITMQ_USER=charliemaunder
+RABBITMQ_PASSWORD=----changeme1-----
 RABBITMQ_SERVER=localhost
+
+# rabbitmq settings
+
+RABBITMQ_DEFAULT_USER=charliemaunder
+RABBITMQ_DEFAULT_PASS=----changeme1-----
+
+# django settings
+
+DEBUG=1
+SECRET_KEY=----changeme2-----
+SQL_ENGINE=django.db.backends.postgresql
+SQL_DATABASE=telegraph_house
+SQL_USER=charlie
+SQL_PASSWORD=----changeme3-----
+SQL_HOST=db
+SQL_PORT=5432
+DATABASE=postgres
+DJANGO_SUPERUSER_PASSWORD=----changeme4-----
+
+# postgres settings
+
+POSTGRES_USER=charlie
+POSTGRES_PASSWORD=----changeme3-----
+POSTGRES_DB=telegraph_house
+
+...end of .env.local
 
 docker compose up --build
