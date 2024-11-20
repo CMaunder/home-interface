@@ -13,6 +13,9 @@ class Location(models.Model):
 	name = models.CharField(max_length=200)
 	description = models.CharField(max_length=2000, null=True)
 
+	def __str__(self):
+		return self.name
+
 class Host(models.Model):
 	hostname = models.CharField(max_length=200)
 	ip_address = models.CharField(max_length=200, unique=True)

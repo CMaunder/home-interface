@@ -1,7 +1,11 @@
-FROM python:3.12-alpine
+FROM python:3.13-alpine
 
 WORKDIR /code
 
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1 
+
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir pika python-dotenv
 
 EXPOSE 5672

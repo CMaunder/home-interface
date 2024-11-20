@@ -12,8 +12,11 @@ then
     echo "PostgreSQL started"
 fi
 
-python manage.py flush --no-input
-python manage.py migrate
-DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD python manage.py createsuperuser --username=charlie --email=cmaunderc@gmail.com --noinput
+# Remove all data from db, perhaps instead of destroying the volume
+# python manage.py flush --no-input
+# DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD python manage.py createsuperuser --username=charlie --email=cmaunderc@gmail.com --noinput
+
+# Apply migratioons
+# python manage.py migrate
 
 exec "$@"

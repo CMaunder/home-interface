@@ -1,6 +1,10 @@
-add .env.local
-eg...
+# Home API
 
+Setup
+
+add .env.local:
+
+```
 # worker settings
 
 RABBITMQ_USER=charliemaunder
@@ -29,8 +33,11 @@ DJANGO_SUPERUSER_PASSWORD=----changeme4-----
 
 POSTGRES_USER=charlie
 POSTGRES_PASSWORD=----changeme3-----
-POSTGRES_DB=telegraph_house
+POSTGRES_DB=dbnameofchoice
+```
 
-...end of .env.local
+## To run
 
-docker compose up --build
+migrations are controlled in entrypoint.sh and should be initially uncommented
+
+`docker compose up --build -d`
