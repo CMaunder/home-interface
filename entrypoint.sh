@@ -14,9 +14,9 @@ fi
 
 # Remove all data from db, perhaps instead of destroying the volume
 # python manage.py flush --no-input
-# DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD python manage.py createsuperuser --username=charlie --email=cmaunderc@gmail.com --noinput
+DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD python manage.py createsuperuser --username=charlie --email=cmaunderc@gmail.com --noinput
 
 # Apply migratioons
-# python manage.py migrate
+python manage.py migrate
 
 exec "$@"

@@ -21,7 +21,7 @@ RABBITMQ_DEFAULT_PASS=----changeme1-----
 DEBUG=1
 SECRET_KEY=----changeme2-----
 SQL_ENGINE=django.db.backends.postgresql
-SQL_DATABASE=telegraph_house
+SQL_DATABASE=----dbnameofchoice----
 SQL_USER=charlie
 SQL_PASSWORD=----changeme3-----
 SQL_HOST=db
@@ -33,7 +33,7 @@ DJANGO_SUPERUSER_PASSWORD=----changeme4-----
 
 POSTGRES_USER=charlie
 POSTGRES_PASSWORD=----changeme3-----
-POSTGRES_DB=dbnameofchoice
+POSTGRES_DB=----dbnameofchoice----
 ```
 
 ## To run locally

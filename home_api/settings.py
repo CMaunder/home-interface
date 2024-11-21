@@ -121,6 +121,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+# here to try to prevent bug where json is rendered on only one line
+CACHE_CONTROL = "no-store, max-age=0, must-revalidate"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
