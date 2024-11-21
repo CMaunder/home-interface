@@ -36,8 +36,19 @@ POSTGRES_PASSWORD=----changeme3-----
 POSTGRES_DB=dbnameofchoice
 ```
 
-## To run
+## To run locally
 
 migrations are controlled in entrypoint.sh and should be initially uncommented
 
 `docker compose up --build -d`
+
+## Push to dockerhub
+
+Possibly change tag in docker-compose file to version it then:
+`docker compose -f docker-compose.prod.yml build`
+`docker compose -f docker-compose.prod.yml push`
+
+## Pull and run on server
+
+use sftp, put to move docker-compose.target.yml and .env.prod onto server and run:
+`docker compose -f docker-compose.target.yml up -d`

@@ -5,7 +5,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./.env.local
+      - ./.env.prod
   rabbitmq:
     image: rabbitmq:4.0-management
     container_name: "rabbitmq"
@@ -23,26 +23,33 @@ services:
       timeout: 10s
       retries: 3
     env_file:
-      - ./.env.local
+      - ./.env.prod
   api:
-    # use docker-compose.prod to push to dockerhub
-    # image: cmaunderc/home-interface-api:1.0
-    build: .
+    image: cmaunderc/home-interface-api:1.0
+    build:
+      context: .
+      platforms:
+        - linux/amd64
+        - linux/arm64
+      dockerfile: Dockerfile.prod
     container_name: "api"
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn home_api.wsgi:application --bind 0.0.0.0:8000
     ports:
       - 8000:8000
     env_file:
-      - ./.env.local
+      - ./.env.prod
     depends_on:
       - db
   daemon:
-    # use docker-compose.prod to push to dockerhub
-    # image: cmaunderc/home-interface-daemon:1.0
-    build: workers/.
+    image: cmaunderc/home-interface-daemon:1.0
+    build:
+      context: workers/.
+      platforms:
+        - linux/amd64
+        - linux/arm64
     container_name: "daemon"
     env_file:
-      - ./.env.local
+      - ./.env.prod
     network_mode: "host"
     depends_on:
       rabbitmq:
