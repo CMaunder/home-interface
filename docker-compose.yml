@@ -25,6 +25,7 @@ services:
     env_file:
       - ./.env.local
   api:
+    image: cmaunderc/home-interface-api:1.0
     build: .
     container_name: "api"
     command: python manage.py runserver 0.0.0.0:8000
@@ -35,6 +36,7 @@ services:
     depends_on:
       - db
   daemon:
+    image: cmaunderc/home-interface-daemon:1.0
     build: workers/.
     container_name: "daemon"
     env_file:
