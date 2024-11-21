@@ -45,10 +45,21 @@ migrations are controlled in entrypoint.sh and should be initially uncommented
 ## Push to dockerhub
 
 Possibly change tag in docker-compose file to version it then:
+
+remove the development containers
+
+`docker compose down`
+
+build the production containers
+
 `docker compose -f docker-compose.prod.yml build`
+
+push
+
 `docker compose -f docker-compose.prod.yml push`
 
 ## Pull and run on server
 
 use sftp, put to move docker-compose.target.yml and .env.prod onto server and run:
-`docker compose -f docker-compose.target.yml up -d`
+
+`docker compose -f docker-compose.target.yml down && docker compose -f docker-compose.target.yml up -d`
