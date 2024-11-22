@@ -26,7 +26,7 @@ services:
   api:
     # use docker-compose.prod to push to dockerhub
     # image: cmaunderc/home-interface-api:1.0
-    build: .
+    build: hub/.
     container_name: "api"
     command: python manage.py runserver 0.0.0.0:8000
     ports:
@@ -38,7 +38,7 @@ services:
   daemon:
     # use docker-compose.prod to push to dockerhub
     # image: cmaunderc/home-interface-daemon:1.0
-    build: workers/.
+    build: hub/workers/.
     container_name: "daemon"
     env_file:
       - ./.env.local

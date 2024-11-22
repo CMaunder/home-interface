@@ -2,7 +2,7 @@ services:
   api:
     image: cmaunderc/home-interface-api:latest
     build:
-      context: .
+      context: hub/.
       platforms:
         - linux/amd64
         - linux/arm64
@@ -10,7 +10,7 @@ services:
   daemon:
     image: cmaunderc/home-interface-daemon:latest
     build:
-      context: workers/.
+      context: hub/workers/.
       platforms:
         - linux/amd64
         - linux/arm64
