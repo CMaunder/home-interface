@@ -13,8 +13,7 @@ services:
       - 5672:5672
       - 15672:15672
     volumes:
-      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      - rabbitmq:/var/lib/rabbitmq/mnesia
     networks:
       - rabbitmq_net
     healthcheck:
@@ -53,3 +52,5 @@ networks:
 
 volumes:
   postgres_data:
+  rabbitmq:
+    driver: local

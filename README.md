@@ -46,10 +46,6 @@ migrations are controlled in entrypoint.sh and should be initially uncommented
 
 Possibly change tag in docker-compose file to version it then:
 
-remove the development containers
-
-`docker compose down`
-
 build the production containers
 
 `docker compose -f docker-compose.prod.yml build`
