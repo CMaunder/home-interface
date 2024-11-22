@@ -48,14 +48,10 @@ Possibly change tag in docker-compose file to version it then:
 
 build the production containers
 
-`docker compose -f docker-compose.prod.yml build`
-
-push
-
-`docker compose -f docker-compose.prod.yml push`
+`docker compose -f docker-compose.prod.yml build && docker compose -f docker-compose.prod.yml push`
 
 ## Pull and run on server
 
-use sftp, put to move docker-compose.target.yml and .env.prod onto server and run:
+If not already there, use sftp, put to move docker-compose.target.yml (rename to docker-compose.yml) and .env.prod onto server then run:
 
-`docker compose -f docker-compose.target.yml down && docker compose -f docker-compose.target.yml up -d`
+`docker compose down && docker compose pull && docker compose up -d`

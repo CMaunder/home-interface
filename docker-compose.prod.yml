@@ -4,8 +4,6 @@ services:
     container_name: "db"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - ./.env.prod
   rabbitmq:
     image: rabbitmq:4.0-management
     container_name: "rabbitmq"
@@ -21,10 +19,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    env_file:
-      - ./.env.prod
   api:
-    image: cmaunderc/home-interface-api:1.0
+    image: cmaunderc/home-interface-api:latest
     build:
       context: .
       platforms:
@@ -35,20 +31,16 @@ services:
     command: gunicorn home_api.wsgi:application --bind 0.0.0.0:8000
     ports:
       - 8000:8000
-    env_file:
-      - ./.env.prod
     depends_on:
       - db
   daemon:
-    image: cmaunderc/home-interface-daemon:1.0
+    image: cmaunderc/home-interface-daemon:latest
     build:
       context: workers/.
       platforms:
         - linux/amd64
         - linux/arm64
     container_name: "daemon"
-    env_file:
-      - ./.env.prod
     network_mode: "host"
     depends_on:
       rabbitmq:

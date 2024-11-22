@@ -24,7 +24,7 @@ services:
     env_file:
       - ./.env.prod
   api:
-    image: cmaunderc/home-interface-api:1.0
+    image: cmaunderc/home-interface-api:latest
     container_name: "api"
     command: gunicorn home_api.wsgi:application --bind 0.0.0.0:8000
     ports:
@@ -34,7 +34,7 @@ services:
     depends_on:
       - db
   daemon:
-    image: cmaunderc/home-interface-daemon:1.0
+    image: cmaunderc/home-interface-daemon:latest
     container_name: "daemon"
     env_file:
       - ./.env.prod
