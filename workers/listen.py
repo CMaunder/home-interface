@@ -12,7 +12,7 @@ load_dotenv(dotenv_path=env_path)
 QUEUE_NAME = 'measurements'
 
 def listen():
-    print('starting listener')
+    print('starting listener...')
     creds = pika.PlainCredentials(
             username=os.getenv("RABBITMQ_USER"), 
             password=os.getenv("RABBITMQ_PASSWORD")
