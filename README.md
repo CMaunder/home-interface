@@ -48,7 +48,7 @@ Possibly change tag in docker-compose file to version it then:
 
 build the production containers
 
-`docker compose -f docker-compose.prod.yml build && docker compose -f docker-compose.prod.yml push`
+`docker compose -f docker-compose.build.yml build && docker compose -f docker-compose.build.yml push`
 
 ## Pull and run on server
 

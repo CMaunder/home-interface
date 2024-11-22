@@ -1,0 +1,16 @@
+services:
+  api:
+    image: cmaunderc/home-interface-api:latest
+    build:
+      context: .
+      platforms:
+        - linux/amd64
+        - linux/arm64
+      dockerfile: Dockerfile.prod
+  daemon:
+    image: cmaunderc/home-interface-daemon:latest
+    build:
+      context: workers/.
+      platforms:
+        - linux/amd64
+        - linux/arm64
