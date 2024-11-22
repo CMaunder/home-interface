@@ -84,6 +84,3 @@ class DHT11(RabbitMQClient):
         self.send(self._format_message(data, TEMPERATURE))
         self.send(self._format_message(data, HUMIDITY))
         self.close_connection()
-
-if __name__ == '__main__':
-    DHT11().capture()
