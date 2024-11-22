@@ -1,4 +1,4 @@
-# Home API
+# Home Interface
 
 Setup
 
