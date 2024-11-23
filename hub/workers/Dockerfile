@@ -11,5 +11,6 @@ RUN pip install --no-cache-dir pika python-dotenv
 EXPOSE 5672
 
 COPY . /code
+COPY ../home_api/settings.py /code
 
 CMD ["python3", "listen.py"]
