@@ -1,6 +1,5 @@
 import pika
 import json
-import os
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -8,6 +7,25 @@ from dotenv import load_dotenv
 env_path = Path('.') / '.env.local'
 load_dotenv(dotenv_path=env_path)
 
+import os
+import django
+
+# Step 1: Set the environment variable for the Django settings module
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
+
+# Step 2: Initialize Django
+django.setup()
+
+# Step 3: Import your models
+from myapp.models import MyModel
+
+# Example ORM operation
+def list_objects():
+    for obj in MyModel.objects.all():
+        print(obj)
+
+if __name__ == "__main__":
+    list_objects()
 
 QUEUE_NAME = 'measurements'
 
