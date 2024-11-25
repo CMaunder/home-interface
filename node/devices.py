@@ -6,8 +6,7 @@ import datetime
 import json
 from statistics import mean
 from dotenv import load_dotenv
-import os
-import socket
+import os, socket, psutil
 
 from pathlib import Path
 env_path = Path('.') / '.env'
@@ -15,6 +14,13 @@ load_dotenv(dotenv_path=env_path)
 
 TEMPERATURE = "temperature"
 HUMIDITY = "humidity"
+
+def get_gateway_ip():
+    # Look for default gateway in the routing table
+    for route in psutil.net_connections(kind='inet'):
+        if route.status == 'ESTABLISHED':
+            return route.laddr[0]
+    return None
 
 class RabbitMQClient:
     def __init__(self, queue_name='measurements'):
@@ -41,6 +47,7 @@ class DHT11(RabbitMQClient):
     def __init__(self):
         self.device_name = "DHT11"
         self.hostname = socket.gethostname()
+        self.ip_address = get_gateway_ip()
         super().__init__()
 
 
@@ -75,7 +82,7 @@ class DHT11(RabbitMQClient):
                 "measure": data.get(unit),
                 "recorded_at": str(now),
                 "device": self.device_name,
-                "hostname": self.hostname}
+                "ip_address": self.ip_address}
         return json.dumps(message)
 
 

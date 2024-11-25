@@ -2,16 +2,16 @@ import pika
 import json
 from pathlib import Path
 from dotenv import load_dotenv
-import os, sys
+import os, sys, django, pytz
+from datetime import datetime
+from rest_framework.exceptions import ValidationError
+from pprint import pprint
+
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
 
 env_path = Path('.') / '.env.local'
 load_dotenv(dotenv_path=env_path)
-
-import os
-import django
 
 # Step 1: Set the environment variable for the Django settings module
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', "home_api.settings")
@@ -20,16 +20,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', "home_api.settings")
 django.setup()
 
 # Step 3: Import your models
-from monitoring.models import Location
-
-# Example ORM operation
-def list_objects():
-    for obj in Location.objects.all():
-        print(obj)
-
-# if __name__ == "__main__":
-print("listing objects")
-list_objects()
+from monitoring.models import Location, Measurement, Unit, Device, Host
+from monitoring.serializers import MeasurementSerializer
 
 QUEUE_NAME = 'measurements'
 
@@ -46,14 +38,43 @@ def listen():
     q = channel.queue_declare(QUEUE_NAME, durable=True)
 
     def save_data(ch, method, properties, body):
-        message = body.decode()
-        print(message)
-        data = json.loads(message)
-        print(f"[x] message received:")
-        print(data)
+        try:
+            message = body.decode()
+            data = json.loads(message)
+            pprint(f"[x] message received: {message}")
+        except Exception as e:
+            print("Warning: Unable to deserialize message.", e)
+            # ack bad message to remove it from the queue
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            return
+        try:
+            unit = Unit.objects.get(name=data.get("unit"))
+            host = Host.objects.get(ip_address=data.get("ip_address"))
+            device = Device.objects.get(name=data.get("device"))
+        except Exception as e:
+            print(f"Unit, Host or Device does not yet exist in the metadata.", e)
+            return
+        try:
+            recorded_at = datetime.strptime(data['recorded_at'], '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc)
+            measurement = Measurement(measure=data.get("measure"), 
+                                      recorded_at=recorded_at, 
+                                      unit=unit, 
+                                      device=device,
+                                      host=host)
+            serializer = MeasurementSerializer(measurement)
+            serializer.validate_recorded_at(recorded_at)
+            serializer.validate({"measure": measurement.measure, "unit":measurement.unit})
+            measurement.save()
+        except ValidationError as e:
+            # ack invalid message to remove it from the queue
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            print(e)
+            return
+        print(f"[x] record saved: {measurement}")
         ch.basic_ack(delivery_tag=method.delivery_tag)
+        
 
-    print("In continuous mode, waiting for messages...")
+    print(f"In continuous mode, waiting for messages from {QUEUE_NAME}...")
     channel.basic_consume(queue=QUEUE_NAME, on_message_callback=save_data)
     channel.start_consuming()
 

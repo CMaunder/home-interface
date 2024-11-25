@@ -10,17 +10,17 @@ class UnitSerializer(serializers.HyperlinkedModelSerializer):
 class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Device
-        fields = '__all__'
+        fields = ['url', 'name']
 
 class LocationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Location
-        fields = '__all__'
+        fields = ['url', 'name']
 
 class HostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Host
-        fields = '__all__'
+        fields = ['url', 'hostname', 'ip_address']
 
 
 class MeasurementSerializer(serializers.HyperlinkedModelSerializer):
@@ -46,3 +46,4 @@ class MeasurementSerializer(serializers.HyperlinkedModelSerializer):
 class MeasurementListSerializer(MeasurementSerializer):
     unit = UnitSerializer(read_only=True)
     device = DeviceSerializer(read_only=True)
+    host = HostSerializer(read_only=True)

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 class Unit(models.Model):
 	name = models.CharField(max_length=200)
@@ -28,10 +29,9 @@ class Host(models.Model):
 class Device(models.Model):
 	name = models.CharField(max_length=200)
 	description = models.CharField(max_length=2000, null=True)
-	host = models.ForeignKey(Host, on_delete=models.CASCADE)
 
 	def __str__(self):
-		return f"{self.name} - {self.host}"
+		return f"{self.name}"
 
 class Measurement(models.Model):
 	measure = models.DecimalField(decimal_places=4, max_digits=15)
@@ -39,9 +39,10 @@ class Measurement(models.Model):
 	recorded_at = models.DateTimeField()
 	unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
 	device = models.ForeignKey(Device, on_delete=models.CASCADE)
+	host = models.ForeignKey(Host, on_delete=models.CASCADE)
 
 	def __str__(self):
-		return f"{self.unit} - {self.measure} {self.unit.dimension}"
+		return f"{self.measure} {self.unit.dimension} - {self.device.name} : {datetime.strftime(self.recorded_at, '%Y-%m-%d %H:%M:%S')}"
 
 
 
