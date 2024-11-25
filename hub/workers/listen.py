@@ -2,6 +2,9 @@ import pika
 import json
 from pathlib import Path
 from dotenv import load_dotenv
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 
 env_path = Path('.') / '.env.local'
@@ -11,21 +14,22 @@ import os
 import django
 
 # Step 1: Set the environment variable for the Django settings module
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', "home_api.settings")
 
 # Step 2: Initialize Django
 django.setup()
 
 # Step 3: Import your models
-from myapp.models import MyModel
+from monitoring.models import Location
 
 # Example ORM operation
 def list_objects():
-    for obj in MyModel.objects.all():
+    for obj in Location.objects.all():
         print(obj)
 
-if __name__ == "__main__":
-    list_objects()
+# if __name__ == "__main__":
+print("listing objects")
+list_objects()
 
 QUEUE_NAME = 'measurements'
 

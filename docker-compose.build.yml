@@ -10,7 +10,8 @@ services:
   daemon:
     image: cmaunderc/home-interface-daemon:latest
     build:
-      context: hub/workers/.
+      context: hub/.
+      dockerfile: workers/Dockerfile
       platforms:
         - linux/amd64
         - linux/arm64

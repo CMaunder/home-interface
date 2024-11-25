@@ -9,7 +9,7 @@ add .env.local:
 
 RABBITMQ_USER=charliemaunder
 RABBITMQ_PASSWORD=----changeme1-----
-RABBITMQ_SERVER=localhost
+RABBITMQ_SERVER=rabbitmq
 
 # rabbitmq settings
 

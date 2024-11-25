@@ -6,6 +6,8 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.prod
+    networks:
+      - db_net
   rabbitmq:
     image: rabbitmq:4.0-management
     container_name: "rabbitmq"
@@ -33,16 +35,24 @@ services:
       - ./.env.prod
     depends_on:
       - db
+    networks:
+      - db_net
   daemon:
     image: cmaunderc/home-interface-daemon:latest
     container_name: "daemon"
     env_file:
       - ./.env.prod
-    network_mode: "host"
+    networks:
+      - rabbitmq_net
+      - db_net
     depends_on:
       rabbitmq:
         condition: service_healthy
+      db:
+        condition: service_started
 networks:
+  db_net:
+    driver: bridge
   rabbitmq_net:
     driver: bridge
 

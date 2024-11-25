@@ -6,6 +6,8 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.local
+    networks:
+      - db_net
   rabbitmq:
     image: rabbitmq:4.0-management
     container_name: "rabbitmq"
@@ -18,8 +20,8 @@ services:
       - rabbitmq_net
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 30s
-      timeout: 10s
+      interval: 10s
+      timeout: 5s
       retries: 3
     env_file:
       - ./.env.local
@@ -35,18 +37,28 @@ services:
       - ./.env.local
     depends_on:
       - db
+    networks:
+      - db_net
   daemon:
     # use docker-compose.prod to push to dockerhub
     # image: cmaunderc/home-interface-daemon:1.0
-    build: hub/workers/.
+    build:
+      context: hub/.
+      dockerfile: workers/Dockerfile
     container_name: "daemon"
     env_file:
       - ./.env.local
-    network_mode: "host"
+    networks:
+      - rabbitmq_net
+      - db_net
     depends_on:
       rabbitmq:
         condition: service_healthy
+      db:
+        condition: service_started
 networks:
+  db_net:
+    driver: bridge
   rabbitmq_net:
     driver: bridge
 
