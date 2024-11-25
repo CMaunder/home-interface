@@ -22,7 +22,7 @@ def get_gateway_ip():
                 return connection.laddr[0]
         print("Could not get connection, trying again...")
         sleep(1)
-    return None
+    raise Exception("Unable to get IP Address, exitting...")
 
 class RabbitMQClient:
     def __init__(self, queue_name='measurements'):
