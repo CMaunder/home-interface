@@ -16,10 +16,12 @@ TEMPERATURE = "temperature"
 HUMIDITY = "humidity"
 
 def get_gateway_ip():
-    # Look for default gateway in the routing table
-    for route in psutil.net_connections(kind='inet'):
-        if route.status == 'ESTABLISHED':
-            return route.laddr[0]
+    for _ in range(3):
+        for connection in psutil.net_connections(kind='inet'):
+            if connection.status == 'ESTABLISHED':
+                return connection.laddr[0]
+        print("Could not get connection, trying again...")
+        sleep(1)
     return None
 
 class RabbitMQClient:
