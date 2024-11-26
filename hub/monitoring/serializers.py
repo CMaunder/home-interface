@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from django.utils import timezone
+from datetime import datetime, timedelta
 from .models import Measurement, Host, Device, Location, Unit
+import pytz
 
 class UnitSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -29,7 +30,9 @@ class MeasurementSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
     def validate_recorded_at(self, value):
-        if value > timezone.now():
+        now_datetime = datetime.now() + timedelta(minutes=1)
+        now_datetime = now_datetime.replace(tzinfo=pytz.utc)
+        if value > now_datetime:
             raise serializers.ValidationError('Value cannot be in the future.')
         return value
     
