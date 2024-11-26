@@ -43,7 +43,19 @@ class MeasurementSerializer(serializers.HyperlinkedModelSerializer):
                 raise serializers.ValidationError(f'Temperature cannot be below absolute zero.')
         return data
     
-class MeasurementListSerializer(MeasurementSerializer):
+class MeasurementCreateUpdateSerializer(MeasurementSerializer):
+    class Meta:
+        model = Measurement
+        fields = '__all__'
+
+class MeasurementDetailSerializer(MeasurementSerializer):
     unit = UnitSerializer(read_only=True)
-    device = DeviceSerializer(read_only=True)
     host = HostSerializer(read_only=True)
+    device = DeviceSerializer(read_only=True)
+
+
+    
+class MeasurementListSerializer(MeasurementSerializer):
+    unit = serializers.SlugRelatedField(read_only=True, slug_field='name')
+    device = serializers.SlugRelatedField(read_only=True, slug_field='name')
+    host = serializers.SlugRelatedField(read_only=True, slug_field='ip_address')

@@ -7,6 +7,7 @@ import json
 from statistics import mean
 from dotenv import load_dotenv
 import os, socket
+from gpiozero import DigitalInputDevice
 
 from pathlib import Path
 env_path = Path('.') / '.env'
@@ -14,6 +15,8 @@ load_dotenv(dotenv_path=env_path)
 
 TEMPERATURE = "temperature"
 HUMIDITY = "humidity"
+SOIL_HYDRATED = "soil_hydrated"
+
 
 class RabbitMQClient:
     def __init__(self, queue_name='measurements'):
@@ -36,13 +39,28 @@ class RabbitMQClient:
                     )
         print(f"[x] message: {message} sent.")
 
-class DHT11(RabbitMQClient):
+
+class BaseDevice(RabbitMQClient):
     def __init__(self):
-        self.device_name = "DHT11"
         self.hostname = socket.gethostname()
         self.ip_address = os.getenv("HOST_LOCAL_IP")
         super().__init__()
 
+    def _format_message(self, data, unit):
+        assert unit is not None
+        now = datetime.datetime.now()
+        message = {"unit": unit, 
+                "measure": data.get(unit),
+                "recorded_at": str(now),
+                "device": self.device_name,
+                "ip_address": self.ip_address}
+        return json.dumps(message)
+
+
+class DHT11(BaseDevice):
+    def __init__(self):
+        self.device_name = "DHT11"
+        super().__init__()
 
     def measure_avg(self, readings=5):
         dht_device = adafruit_dht.DHT11(board.D4)
@@ -66,21 +84,26 @@ class DHT11(RabbitMQClient):
             raise Exception(f"Temp or humidity failed to record after {readings} readings.")
         return {TEMPERATURE: mean(temp_array), 
                 HUMIDITY: mean(humidity_array)}
-    
-
-    def _format_message(self, data, unit):
-        assert unit is not None
-        now = datetime.datetime.now()
-        message = {"unit": unit, 
-                "measure": data.get(unit),
-                "recorded_at": str(now),
-                "device": self.device_name,
-                "ip_address": self.ip_address}
-        return json.dumps(message)
-
 
     def capture(self):
         data = self.measure_avg(readings=3)
         self.send(self._format_message(data, TEMPERATURE))
         self.send(self._format_message(data, HUMIDITY))
         self.close_connection()
+
+
+class SoilProbe(BaseDevice):
+    def __init__(self):
+        self.device_name = "LM393"
+        super().__init__()
+
+    @property
+    def soil_hydrated(self) -> bool:
+        soil_probe = DigitalInputDevice(17, bounce_time=0.5)
+        return not bool(soil_probe.value)
+    
+    def capture(self):
+        data = {SOIL_HYDRATED: int(self.soil_hydrated)}
+        self.send(self._format_message(data, SOIL_HYDRATED))
+        self.close_connection()
+
