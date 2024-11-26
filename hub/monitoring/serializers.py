@@ -5,22 +5,22 @@ from .models import Measurement, Host, Device, Location, Unit
 class UnitSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Unit
-        fields = ['url', 'name', 'dimension']
+        fields = '__all__'
 
 class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Device
-        fields = ['url', 'name']
+        fields = '__all__'
 
 class LocationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Location
-        fields = ['url', 'name']
+        fields = '__all__'
 
 class HostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Host
-        fields = ['url', 'hostname', 'ip_address']
+        fields = '__all__'
 
 
 class MeasurementSerializer(serializers.HyperlinkedModelSerializer):
