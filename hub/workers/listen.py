@@ -42,17 +42,13 @@ def listen():
             message = body.decode()
             data = json.loads(message)
             pprint(f"[x] message received: {message}")
-        except Exception as e:
-            print("Warning: Unable to deserialize message.", e)
-            # ack bad message to remove it from the queue
-            ch.basic_ack(delivery_tag=method.delivery_tag)
-            return
-        try:
             unit = Unit.objects.get(name=data.get("unit"))
             host = Host.objects.get(ip_address=data.get("ip_address"))
             device = Device.objects.get(name=data.get("device"))
         except Exception as e:
-            print(f"Unit, Host or Device does not yet exist in the metadata.", e)
+            print(e)
+            # ack bad message to remove it from the queue
+            ch.basic_ack(delivery_tag=method.delivery_tag)
             return
         try:
             recorded_at = datetime.strptime(data['recorded_at'], '%Y-%m-%d %H:%M:%S.%f').replace(tzinfo=pytz.utc)
