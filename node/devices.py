@@ -6,7 +6,7 @@ import datetime
 import json
 from statistics import mean
 from dotenv import load_dotenv
-import os, socket, psutil
+import os, socket
 
 from pathlib import Path
 env_path = Path('.') / '.env'
@@ -14,15 +14,6 @@ load_dotenv(dotenv_path=env_path)
 
 TEMPERATURE = "temperature"
 HUMIDITY = "humidity"
-
-def get_gateway_ip():
-    for _ in range(3):
-        for connection in psutil.net_connections(kind='inet'):
-            if connection.status == 'ESTABLISHED':
-                return connection.laddr[0]
-        print("Could not get connection, trying again...")
-        sleep(1)
-    raise Exception("Unable to get IP Address, exitting...")
 
 class RabbitMQClient:
     def __init__(self, queue_name='measurements'):
@@ -49,11 +40,11 @@ class DHT11(RabbitMQClient):
     def __init__(self):
         self.device_name = "DHT11"
         self.hostname = socket.gethostname()
-        self.ip_address = get_gateway_ip()
+        self.ip_address = os.getenv("HOST_LOCAL_IP")
         super().__init__()
 
 
-    def get_data_avg(self, readings=5):
+    def measure_avg(self, readings=5):
         dht_device = adafruit_dht.DHT11(board.D4)
         temp_array = []
         humidity_array = []
@@ -89,7 +80,7 @@ class DHT11(RabbitMQClient):
 
 
     def capture(self):
-        data = self.get_data_avg(readings=3)
+        data = self.measure_avg(readings=3)
         self.send(self._format_message(data, TEMPERATURE))
         self.send(self._format_message(data, HUMIDITY))
         self.close_connection()
