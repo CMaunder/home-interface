@@ -17,6 +17,7 @@ def populate_initial_data(apps, schema_editor):
     
     Unit.objects.create(name="temperature", dimension="Celcius")
     Unit.objects.create(name="humidity", dimension="percent")
+    Unit.objects.create(name="soil_hydrated", dimension="boolean")
 
     
 
