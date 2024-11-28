@@ -14,4 +14,6 @@ fi
 # Apply migratioons
 python manage.py migrate
 
+DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD python manage.py createsuperuser --username=charlie --email=cmaunderc@gmail.com --noinput
+
 exec "$@"

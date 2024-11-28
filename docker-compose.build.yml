@@ -1,4 +1,12 @@
 services:
+  nginx:
+    image: cmaunderc/home-interface-nginx:latest
+    build:
+      context: hub/nginx
+      platforms:
+        - linux/amd64
+        - linux/arm64
+      dockerfile: Dockerfile
   api:
     image: cmaunderc/home-interface-api:latest
     build:

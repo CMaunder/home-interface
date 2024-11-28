@@ -55,3 +55,7 @@ build the production containers
 If not already there, use sftp, put to move docker-compose.target.yml (rename to docker-compose.yml) and .env.prod onto server then run:
 
 `docker compose down && docker compose pull && docker compose up -d`
+
+## Run production locally
+
+`docker compose -f docker-compose.target.yml down -v && docker compose -f docker-compose.build.yml build && docker compose -f docker-compose.target.yml up -d`
