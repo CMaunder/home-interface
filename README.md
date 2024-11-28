@@ -40,7 +40,7 @@ POSTGRES_DB=----dbnameofchoice----
 
 migrations are controlled in entrypoint.sh and should be initially uncommented
 
-`docker compose up --build -d`
+`docker compose up --build -w`
 
 ## Push to dockerhub
 

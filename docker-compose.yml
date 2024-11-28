@@ -39,6 +39,11 @@ services:
       - db
     networks:
       - db_net
+    develop:
+      watch:
+        - action: sync
+          path: ./hub
+          target: /code/
   daemon:
     # use docker-compose.prod to push to dockerhub
     # image: cmaunderc/home-interface-daemon:1.0

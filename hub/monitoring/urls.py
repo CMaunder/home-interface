@@ -4,7 +4,7 @@ from .views import MeasurementViewSet, LocationViewSet, UnitViewSet, HostViewSet
 
 
 router = DefaultRouter()
-router.register(r'measurements', MeasurementViewSet)
+router.register(r'measurements', MeasurementViewSet, basename="measurement")
 router.register(r'hosts', HostViewSet)
 router.register(r'locations', LocationViewSet)
 router.register(r'devices', DeviceViewSet)
