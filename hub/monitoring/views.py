@@ -1,10 +1,15 @@
 from rest_framework import permissions, viewsets
 from django.db.models import Count
-from .models import Measurement, Device, Host, Unit, Location
+from .models import Measurement, Device, Host, Unit, Location, Light
 from rest_framework.exceptions import ValidationError
-from .serializers import MeasurementDetailSerializer, MeasurementListSerializer, DeviceSerializer, HostSerializer, UnitSerializer, LocationSerializer, MeasurementCreateUpdateSerializer
+from rest_framework import status
+from .serializers import MeasurementDetailSerializer, MeasurementListSerializer, DeviceSerializer, HostSerializer, UnitSerializer, LocationSerializer, MeasurementCreateUpdateSerializer, LightSerializer
 from fnmatch import fnmatch
 from datetime import datetime, timedelta
+from rest_framework.response import Response
+from rest_framework.request import Request
+from rest_framework.decorators import action
+from time import sleep
 
 class MeasurementViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
@@ -58,7 +63,29 @@ class LocationViewSet(viewsets.ModelViewSet):
     serializer_class = LocationSerializer
     permission_classes = [permissions.AllowAny]
 
+class LightViewSet(viewsets.ModelViewSet):
+    queryset = Light.objects.all()
+    serializer_class = LightSerializer
+    permission_classes = [permissions.AllowAny]
 
-
-
-
+    @action(detail=True, methods=['POST'], url_path='power')
+    def trigger_power(self, request: Request, pk=None):
+        light = Light.objects.get(id=pk)
+        if request.data.get("state") == True:
+            light.power_on()
+            return Response(f'{light} on')
+        elif request.data.get("state") == False:
+            light.power_off()
+            return Response(f'{light} off')
+        return Response("Ensure body is set with state: boolean", status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['POST'], url_path='set-hsb')
+    def set_hsb(self, request: Request, pk=None):
+        """ body ranges:
+        hue: [0 - 360]
+        saturation:[0 - 100]
+        brightness:[0 - 100]
+        """
+        light = Light.objects.get(id=pk)
+        updated_color = light.set_hsb(request.data)
+        return Response(f'{light} - hsb updated: {updated_color[:3]}')

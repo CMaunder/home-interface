@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from datetime import datetime, timedelta
-from .models import Measurement, Host, Device, Location, Unit
+from .models import Measurement, Host, Device, Location, Unit, Light
 import pytz
 
 class UnitSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,6 +21,11 @@ class LocationSerializer(serializers.HyperlinkedModelSerializer):
 class HostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Host
+        fields = '__all__'
+
+class LightSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Light
         fields = '__all__'
 
 
@@ -55,8 +60,6 @@ class MeasurementDetailSerializer(MeasurementSerializer):
     unit = UnitSerializer(read_only=True)
     host = HostSerializer(read_only=True)
     device = DeviceSerializer(read_only=True)
-
-
     
 class MeasurementListSerializer(MeasurementSerializer):
     unit = serializers.SlugRelatedField(read_only=True, slug_field='name')
