@@ -22,7 +22,7 @@ class MeasurementViewSet(viewsets.ModelViewSet):
         return MeasurementDetailSerializer
     
     def get_queryset(self):
-        queryset = Measurement.objects.order_by("-recorded_at")
+        queryset = Measurement.objects.order_by("recorded_at")
         query_params = self.request.query_params
         unit = query_params.get('unit')
         if unit:

@@ -181,15 +181,18 @@ if DEBUG:
     DEBUG_TOOLBAR_CONFIG = {
         'SHOW_TOOLBAR_CALLBACK': show_toolbar,
     }
-
+CORS_ALLOW_ALL_ORIGINS=True
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:1337',  # Allow requests from localhost:1337
-    # You can also add other trusted origins here
+    'http://localhost:3000',
+    '192.168.1.14:3000'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:1337',  # Add your origin here
-    # Add other trusted origins as needed
+    'http://localhost:3000',
+    '192.168.1.14:3000'
 ]
 
 USE_X_FORWARDED_HOST=True
