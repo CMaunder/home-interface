@@ -186,13 +186,13 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:1337',  # Allow requests from localhost:1337
     'http://localhost:3000',
-    '192.168.1.14:3000'
+    'http://192.168.1.14:3000'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:1337',  # Add your origin here
     'http://localhost:3000',
-    '192.168.1.14:3000'
+    'http://192.168.1.14:3000'
 ]
 
 USE_X_FORWARDED_HOST=True
