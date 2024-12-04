@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from datetime import datetime, timedelta
 from .models import Measurement, Host, Device, Location, Unit, Light
-from .utils import round_seconds
+from .utils import round_time
 import pytz
 
 class UnitSerializer(serializers.HyperlinkedModelSerializer):
@@ -36,10 +36,12 @@ class MeasurementSerializer(serializers.HyperlinkedModelSerializer):
     measure = serializers.SerializerMethodField()
 
     def get_recorded_at(self, obj):
-        return round_seconds(obj.recorded_at)
+        # nearest minute
+        return round_time(obj.recorded_at, roundTo=60)
     
     def get_inserted_at(self, obj):
-        return round_seconds(obj.inserted_at)
+        # nearest second
+        return round_time(obj.inserted_at, roundTo=1)
     
     def get_measure(self, obj):
         return str(round(obj.measure, 1))
