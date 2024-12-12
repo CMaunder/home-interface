@@ -40,15 +40,17 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" data-toolpad-color-scheme="light" suppressHydrationWarning>
       <body>
-        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
-          <AppProvider
-            navigation={NAVIGATION}
-            branding={BRANDING}
-            theme={theme}
-          >
-            {props.children}
-          </AppProvider>
-        </AppRouterCacheProvider>
+        <React.Suspense>
+          <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+            <AppProvider
+              navigation={NAVIGATION}
+              branding={BRANDING}
+              theme={theme}
+            >
+              {props.children}
+            </AppProvider>
+          </AppRouterCacheProvider>
+        </React.Suspense>
       </body>
     </html>
   );

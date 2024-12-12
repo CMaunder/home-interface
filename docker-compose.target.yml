@@ -50,6 +50,19 @@ services:
     networks:
       - db_net
       - app_net
+  ui:
+    image: cmaunderc/home-interface-ui:latest
+    container_name: "ui"
+    env_file:
+      - .env.prod
+    volumes:
+      - ./ui/app:/app/app
+      - ./ui/public:/app/public
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - ui_net
   daemon:
     image: cmaunderc/home-interface-daemon:latest
     container_name: "daemon"
@@ -71,6 +84,8 @@ networks:
     driver: bridge
   app_net:
     driver: bridge
+  ui_net:
+    external: true
 
 volumes:
   postgres_data:

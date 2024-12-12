@@ -56,6 +56,8 @@ If not already there, use sftp, put to move docker-compose.target.yml (rename to
 
 `docker compose down && docker compose pull && docker compose up -d`
 
+Note: Need to initially run `docker network create ui_net`
+
 ## Run production locally
 
 `docker compose -f docker-compose.target.yml down -v && docker compose -f docker-compose.build.yml build && docker compose -f docker-compose.target.yml up -d`

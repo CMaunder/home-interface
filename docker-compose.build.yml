@@ -23,3 +23,11 @@ services:
       platforms:
         - linux/amd64
         - linux/arm64
+  ui:
+    image: cmaunderc/home-interface-ui:latest
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64

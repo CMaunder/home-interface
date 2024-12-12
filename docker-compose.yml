@@ -61,11 +61,28 @@ services:
         condition: service_healthy
       db:
         condition: service_started
+  ui:
+    container_name: ui
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    env_file:
+      - .env.local
+    volumes:
+      - ./ui/app:/app/app
+      - ./ui/public:/app/public
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - ui_net
 networks:
   db_net:
     driver: bridge
   rabbitmq_net:
     driver: bridge
+  ui_net:
+    external: true
 
 volumes:
   postgres_data:
