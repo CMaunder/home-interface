@@ -130,7 +130,7 @@ class LightSensor(BaseDevice):
     def capture(self):
         counts_array = []
         for _ in range(10):
-            counts_array.push(self.counts_to_charge())
+            counts_array.append(self.counts_to_charge())
         mean_brightness = 100/mean(counts_array)
         self.send(self._format_message(mean_brightness, BRIGHTNESS))
 
