@@ -30,7 +30,7 @@ def add_mins_to_time(time, minutes):
 
 def update_light(measurement):
     now = datetime.now()
-    unit = Unit.objects.get(id=measurement["unit"].id)
+    unit = Unit.objects.get(id=measurement.unit.id)
     if unit and unit.name == "brightness":
         try:
             desk_light = Light.objects.get(id=1)
@@ -40,9 +40,9 @@ def update_light(measurement):
             if desk_light.auto_power_off_time and add_mins_to_time(desk_light.auto_power_off_time, 5) >= now.time() >= desk_light.auto_power_off_time:
                 desk_light.power_off()
 
-            brightness_recorded = float(measurement.get("measure"))
+            brightness_recorded = float(measurement.measure)
             if brightness_recorded < 50:
-                desk_light.set_hsb({"saturation": 100-2*brightness_recorded})
+                desk_light.set_hsb({"saturation": 50-brightness_recorded})
             else:
                 desk_light.set_hsb({"saturation": 1})
         except Exception as e:
@@ -83,7 +83,10 @@ def listen():
             serializer = MeasurementSerializer(measurement)
             serializer.validate_recorded_at(recorded_at)
             serializer.validate({"measure": measurement.measure, "unit":measurement.unit})
-            update_light(measurement)
+            try:
+                update_light(measurement)
+            except Exception:
+                pass
             measurement.save()
         except ValidationError as e:
             # ack invalid message to remove it from the queue
