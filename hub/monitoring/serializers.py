@@ -60,28 +60,6 @@ class MeasurementSerializer(serializers.HyperlinkedModelSerializer):
         repr["measure"] = str(round(float(repr["measure"]) , 1)) 
         return repr
     
-    def create(self, validated_data):
-        now = datetime.now()
-        unit = Unit.objects.get(id=validated_data["unit"].id)
-        if unit and unit.name == "brightness":
-            try:
-                desk_light = Light.objects.get(id=1)
-
-                if desk_light.auto_power_on_time and add_mins_to_time(desk_light.auto_power_on_time, 5) >= now.time() >= desk_light.auto_power_on_time:
-                    desk_light.power_on()
-                if desk_light.auto_power_off_time and add_mins_to_time(desk_light.auto_power_off_time, 5) >= now.time() >= desk_light.auto_power_off_time:
-                    desk_light.power_off()
-
-                brightness_recorded = float(validated_data.get("measure"))
-                if brightness_recorded < 50:
-                    desk_light.set_hsb({"saturation": 100-2*brightness_recorded})
-                else:
-                    desk_light.set_hsb({"saturation": 1})
-            except Exception as e:
-                print("Something went wrong: ", e)
-        return super().create(validated_data)
-
-    
 class MeasurementCreateUpdateSerializer(MeasurementSerializer):
     class Meta:
         model = Measurement
