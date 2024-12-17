@@ -112,12 +112,11 @@ class SoilProbe(BaseDevice):
 class LightSensor(BaseDevice):
     def __init__(self):
         self.device_name = "Photosensitive Resistor"
-        self.PIN_NUMBER = 16
+        self.PIN_NUMBER = 23
         super().__init__()
 
     def counts_to_charge(self):
         count = 0
-        GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.PIN_NUMBER, GPIO.OUT)
         GPIO.output(self.PIN_NUMBER, GPIO.LOW)
         sleep(0.1)
@@ -125,12 +124,16 @@ class LightSensor(BaseDevice):
 
         while (GPIO.input(self.PIN_NUMBER) == GPIO.LOW):
             count += 1
+        print(count)
         return count
 
     def capture(self):
         counts_array = []
         for _ in range(10):
             counts_array.append(self.counts_to_charge())
-        mean_brightness = 100/mean(counts_array)
-        self.send(self._format_message(mean_brightness, BRIGHTNESS))
+        print(counts_array)
+        mean_brightness = 100000/mean(counts_array)
+        print(mean_brightness)
+        data = {BRIGHTNESS: int(mean_brightness)}
+        self.send(self._format_message(data, BRIGHTNESS))
 
