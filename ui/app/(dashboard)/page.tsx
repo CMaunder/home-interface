@@ -20,6 +20,11 @@ export default function HomePage() {
             <Chart height={300} display="Humidity" />
           </Paper>
         </Grid>
+        <Grid size={6}>
+          <Paper className="m-5 rounded-lg">
+            <Chart height={300} display="Brightness" />
+          </Paper>
+        </Grid>
       </Grid>
       {/* <div className="underline">Hi, Charlie</div> */}
     </>

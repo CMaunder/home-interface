@@ -5,7 +5,7 @@ import Chart from "@/app/components/chart";
 export default function TemperaturePage() {
   return (
     <>
-      <Typography>Temp</Typography>
+      <Typography>Temperature</Typography>
 
       <Chart height={600} display="Temperature" />
     </>

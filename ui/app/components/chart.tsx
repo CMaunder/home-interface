@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import { lightTheme, darkTheme, XYChartTheme } from "@visx/xychart";
+import { useTheme } from "@mui/material/styles";
 import CustomChartBackground from "./customChartBackground";
 import { curveLinear } from "@visx/curve";
 const dateScaleConfig = { type: "band", paddingInner: 0.3 } as const;
@@ -41,13 +42,32 @@ type Measurement = {
   url: string;
 };
 
-type Display = "Temperature" | "Humidity";
+type Display = "Temperature" | "Humidity" | "Brightness";
 
-const displayUnitMapping = { Temperature: "°C", Humidity: "%" };
+const displayUnitMapping = {
+  Temperature: "°C",
+  Humidity: "%",
+  Brightness: "-",
+};
+
+const displayColorMapping = {
+  Temperature: "lightcoral",
+  Humidity: "#3BC9DB",
+  Brightness: "orange",
+};
 
 export default function Chart({ height, display }: ChartProps) {
+  const globalTheme = useTheme();
   const [theme, setTheme] = useState<XYChartTheme>(darkTheme);
   const [tempData, setTempData] = useState<Measurement[]>([]);
+
+  useEffect(() => {
+    if (globalTheme.palette.mode === "dark") {
+      setTheme(darkTheme);
+    } else if (globalTheme.palette.mode === "light") {
+      setTheme(lightTheme);
+    }
+  }, [globalTheme]);
 
   useEffect(() => {
     const getData = () => {
@@ -101,7 +121,7 @@ export default function Chart({ height, display }: ChartProps) {
       theme={theme}
       xScale={config.x}
       yScale={config.y}
-      height={Math.min(400, height)}
+      height={Math.min(1000, height)}
     >
       <CustomChartBackground />
       <Grid
@@ -119,7 +139,7 @@ export default function Chart({ height, display }: ChartProps) {
           xAccessor={getTime}
           yAccessor={getMeasure}
           fillOpacity={0.4}
-          fill={display === "Temperature" ? "lightcoral" : "#3BC9DB"}
+          fill={displayColorMapping[display]}
         />
         {/* <AreaSeries
           dataKey="New York"

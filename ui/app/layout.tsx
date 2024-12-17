@@ -4,6 +4,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
+import LightModeIcon from "@mui/icons-material/LightMode";
 import type { Navigation } from "@toolpad/core/AppProvider";
 import "./globals.css";
 
@@ -28,6 +29,11 @@ const NAVIGATION: Navigation = [
     segment: "humidity",
     title: "Humidity",
     icon: <WaterDropIcon />,
+  },
+  {
+    segment: "brightness",
+    title: "Brightness",
+    icon: <LightModeIcon />,
   },
 ];
 

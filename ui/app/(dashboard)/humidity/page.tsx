@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 export default function HumidityPage() {
   return (
     <>
-      <Typography>Temp</Typography>
+      <Typography>Humidity</Typography>
 
       <Chart height={600} display="Humidity" />
     </>
