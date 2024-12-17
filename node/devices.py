@@ -7,6 +7,7 @@ import json
 from statistics import mean
 from dotenv import load_dotenv
 import os, socket
+import RPi.GPIO as GPIO
 from gpiozero import DigitalInputDevice
 
 from pathlib import Path
@@ -16,6 +17,7 @@ load_dotenv(dotenv_path=env_path)
 TEMPERATURE = "temperature"
 HUMIDITY = "humidity"
 SOIL_HYDRATED = "soil_hydrated"
+BRIGHTNESS = "brightness"
 
 
 class RabbitMQClient:
@@ -106,4 +108,29 @@ class SoilProbe(BaseDevice):
         data = {SOIL_HYDRATED: int(self.soil_hydrated)}
         self.send(self._format_message(data, SOIL_HYDRATED))
         self.close_connection()
+
+class LightSensor(BaseDevice):
+    def __init__(self):
+        self.device_name = "Photosensitive Resistor"
+        self.PIN_NUMBER = 16
+        super().__init__()
+
+    def counts_to_charge(self):
+        count = 0
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(self.PIN_NUMBER, GPIO.OUT)
+        GPIO.output(self.PIN_NUMBER, GPIO.LOW)
+        sleep(0.1)
+        GPIO.setup(self.PIN_NUMBER, GPIO.IN)
+
+        while (GPIO.input(self.PIN_NUMBER) == GPIO.LOW):
+            count += 1
+        return count
+
+    def capture(self):
+        counts_array = []
+        for _ in range(10):
+            counts_array.push(self.counts_to_charge())
+        mean_brightness = 100/mean(counts_array)
+        self.send(self._format_message(mean_brightness, BRIGHTNESS))
 
