@@ -53,6 +53,8 @@ class Light(models.Model):
 	ip_address = models.CharField(max_length=200, unique=True)
 	mac_address = models.CharField(max_length=200, unique=True)
 	location = models.ForeignKey(Location, on_delete=models.CASCADE)
+	auto_power_off_time = models.TimeField(null=True)
+	auto_power_on_time = models.TimeField(null=True)
 	transition_time = models.IntegerField(null=True)
 
 	def __init__(self, *args, **kwargs):

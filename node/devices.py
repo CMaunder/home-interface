@@ -121,19 +121,15 @@ class LightSensor(BaseDevice):
         GPIO.output(self.PIN_NUMBER, GPIO.LOW)
         sleep(0.1)
         GPIO.setup(self.PIN_NUMBER, GPIO.IN)
-
         while (GPIO.input(self.PIN_NUMBER) == GPIO.LOW):
             count += 1
-        print(count)
         return count
 
     def capture(self):
         counts_array = []
         for _ in range(10):
             counts_array.append(self.counts_to_charge())
-        print(counts_array)
         mean_brightness = 100000/mean(counts_array)
-        print(mean_brightness)
         data = {BRIGHTNESS: int(mean_brightness)}
         self.send(self._format_message(data, BRIGHTNESS))
 

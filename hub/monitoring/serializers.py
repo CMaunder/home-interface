@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from datetime import datetime, timedelta
 from .models import Measurement, Host, Device, Location, Unit, Light
-from .utils import round_time
+from .utils import round_time, add_mins_to_time
 import pytz
 
 class UnitSerializer(serializers.HyperlinkedModelSerializer):
@@ -31,20 +31,6 @@ class LightSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MeasurementSerializer(serializers.HyperlinkedModelSerializer):
-    recorded_at = serializers.SerializerMethodField()
-    inserted_at = serializers.SerializerMethodField()
-    measure = serializers.SerializerMethodField()
-
-    def get_recorded_at(self, obj):
-        # nearest minute
-        return round_time(obj.recorded_at, roundTo=60)
-    
-    def get_inserted_at(self, obj):
-        # nearest second
-        return round_time(obj.inserted_at, roundTo=1)
-    
-    def get_measure(self, obj):
-        return str(round(obj.measure, 1))
 
     class Meta:
         model = Measurement
@@ -66,6 +52,35 @@ class MeasurementSerializer(serializers.HyperlinkedModelSerializer):
             if data['measure'] < -273.15:
                 raise serializers.ValidationError(f'Temperature cannot be below absolute zero.')
         return data
+    
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr["recorded_at"] = round_time(datetime.fromisoformat(repr["recorded_at"]), roundTo=60)
+        repr["inserted_at"] = round_time(datetime.fromisoformat(repr["inserted_at"]), roundTo=1)
+        repr["measure"] = str(round(float(repr["measure"]) , 1)) 
+        return repr
+    
+    def create(self, validated_data):
+        now = datetime.now()
+        unit = Unit.objects.get(id=validated_data["unit"].id)
+        if unit and unit.name == "brightness":
+            try:
+                desk_light = Light.objects.get(id=1)
+
+                if desk_light.auto_power_on_time and add_mins_to_time(desk_light.auto_power_on_time, 5) >= now.time() >= desk_light.auto_power_on_time:
+                    desk_light.power_on()
+                if desk_light.auto_power_off_time and add_mins_to_time(desk_light.auto_power_off_time, 5) >= now.time() >= desk_light.auto_power_off_time:
+                    desk_light.power_off()
+
+                brightness_recorded = float(validated_data.get("measure"))
+                if brightness_recorded < 50:
+                    desk_light.set_hsb({"saturation": 100-2*brightness_recorded})
+                else:
+                    desk_light.set_hsb({"saturation": 1})
+            except Exception as e:
+                print("Something went wrong: ", e)
+        return super().create(validated_data)
+
     
 class MeasurementCreateUpdateSerializer(MeasurementSerializer):
     class Meta:
